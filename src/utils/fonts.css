@@ -1,0 +1,20 @@
+@font-face {
+	font-family: 'MontserratBold';
+	src: url('../fonts/Montserrat-Bold.ttf') format('ttf');
+	font-display: swap;
+}
+@font-face {
+	font-family: 'MontserratLight';
+	src: url('../fonts/Montserrat-Light.ttf') format('ttf');
+	font-display: swap;
+}
+@font-face {
+	font-family: 'MontserratRegular';
+	src: url('../fonts/Montserrat-Light.ttf') format('ttf');
+	font-display: swap;
+}
+@font-face {
+	font-family: 'IBMPlexSans';
+	src: url('../fonts/IBMPlexSans-Regular.ttf') format('ttf');
+	font-display: swap;
+}
