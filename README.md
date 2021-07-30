@@ -1,6 +1,6 @@
-### Ally OKR assessment
+### Smart stove controller
 
-To implement a OKR assessment for ally.
+To develop a PWA to control the smart stove.
 
 ### To run in development:
 

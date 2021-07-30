@@ -1,10 +1,10 @@
-import React from "react";
-import { renderToString } from "react-dom/server";
-import { renderStylesToString } from "emotion-server";
-import { StaticRouter } from "react-router-dom";
-import { renderRoutes } from "react-router-config";
-import { Provider } from "react-redux";
-import routes from "../src/routes";
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { renderStylesToString } from 'emotion-server';
+import { StaticRouter } from 'react-router-dom';
+import { renderRoutes } from 'react-router-config';
+import { Provider } from 'react-redux';
+import routes from '../src/routes';
 function Html({ store, url }) {
   let root = null;
   const state = store.getState();
@@ -25,7 +25,7 @@ function Html({ store, url }) {
   return `<!doctype html>
   <html>
     <head>
-      <title>Ally</title>
+      <title>Smart stove controller</title>
       <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, height=device-height, viewport-fit=cover"

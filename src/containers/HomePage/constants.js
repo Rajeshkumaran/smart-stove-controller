@@ -1,1 +1,1 @@
-export const GET_OKRS = 'app/HomePage/GET_OKRS';
+export const UPDATE_STOVE_SETTINGS = 'app/HomePage/UPDATE_STOVE_SETTINGS';
