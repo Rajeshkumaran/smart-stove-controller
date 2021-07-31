@@ -1,7 +1,6 @@
 import { injectGlobal } from 'emotion';
 injectGlobal`
 html {
-  font-size: 62.5%;
   height: 100%;
   width: 100%;
 }
@@ -22,6 +21,9 @@ html {
     height: 100%;
 
   }
+  p{
+    font-size: 14px;
+  }
   img {
     border: 0;
   }
@@ -36,12 +38,19 @@ html {
   li{
     list-style-type:none;
   }
+  button{
+    outline: none !important;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
   input:focus,
   textarea:focus,
   button:focus,
   a:focus,
   article:focus {
     outline: none !important;
-    border:none;
+    border: none;
   }
 `;

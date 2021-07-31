@@ -2,47 +2,48 @@ import React from 'react';
 import styled, { css } from 'react-emotion';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { CircleSlider } from 'react-circle-slider';
 
 import Tab from '../../components/Tab';
 
 import { selectHomePageState } from '../../selectors';
-import { primary, white } from '../../constants';
+import { primary, primary_bg, white, slider_bg } from '../../constants';
+import StoveButtons from '../../components/StoveButtons';
 
 const Container = styled('div')`
   width: 100%;
 `;
-const StoveWrapper = styled('span')`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  position: fixed;
-  bottom: 20px;
+const SliderWrapper = styled('div')`
   width: 100%;
-`;
-const StoveRow = styled('div')`
-  display: flex;
-  width: 100%;
-  justify-content: center;
-`;
-const Stove = styled('button')`
-  border: none;
-  outline: none;
-  color: ${primary};
-  background: ${white};
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
-  width: 60px;
-  height: 60px;
-  margin: 8px 12px;
+  margin: 16px 0;
+  height: 320px;
+  > svg {
+    position: relative;
+    left: -21px;
+  }
 `;
+
+const HeatText = styled('span')`
+  position: relative;
+  right: -97px;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 5px;
+`;
+const StoveConfigEdit = styled('button')`
+  box-shadow: 3px 2px 4px #e9e9e9;
+  padding: 12px;
+`;
+
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       activeTabIndex: 0,
-      activeStoveIndex: 0,
+      heatSlider: 30,
     };
   }
 
@@ -51,50 +52,48 @@ class HomePage extends React.Component {
       activeTabIndex: selectedIndex,
     });
 
-  renderStoves = () => {
-    const stoveRow1 = [
-      { name: 'Stove 1', key: 'Stove1' },
-      { name: 'Stove 2', key: 'Stove2' },
-    ];
-    const stoveRow2 = [
-      { name: 'Stove 3', key: 'Stove3' },
-      { name: 'Stove 4', key: 'Stove4' },
-    ];
-    const stoveRows = [stoveRow1, stoveRow2];
-
-    const { activeStoveIndex } = this.state;
-    return stoveRows.map((stoveRow, stoveRowIndex) => (
-      <StoveRow key={`StoveRow-${stoveRowIndex.toString()}`}>
-        {stoveRow.map((stove, stoveIndex) => (
-          <Stove
-            key={stove.key}
-            className={
-              activeStoveIndex === 2 * stoveRowIndex + stoveIndex &&
-              css`
-                background: ${primary};
-                color: ${white};
-              `
-            }
-            onClick={() => {
-              this.setState({
-                activeStoveIndex: 2 * stoveRowIndex + stoveIndex,
-              });
-            }}
-          >
-            {stove.name}
-          </Stove>
-        ))}
-      </StoveRow>
-    ));
-  };
-
   render() {
-    const { activeTabIndex } = this.state;
+    const { activeTabIndex, heatSlider } = this.state;
+    const { activeStoveIndex, onStoveSelect, onEditStoveConfig } = this.props;
     return (
       <Container>
         <Tab activeTab={activeTabIndex} onSelectTab={this.onSelectTab} />
         <>
-          <StoveWrapper>{this.renderStoves()}</StoveWrapper>
+          <SliderWrapper>
+            <HeatText>HEAT</HeatText>
+            <CircleSlider
+              value={heatSlider}
+              stepSize={26}
+              onChange={(value) => {
+                console.log('value', value);
+                this.setState({
+                  heatSlider: value,
+                });
+              }}
+              circleWidth={20}
+              progressWidth={20}
+              knobRadius={10}
+              circleColor={slider_bg}
+              progressColor={primary}
+              disabled
+            />
+          </SliderWrapper>
+          <div
+            className={css`
+              display: flex;
+              width: 100%;
+              justify-content: center;
+            `}
+          >
+            <StoveConfigEdit onClick={onEditStoveConfig}>SET CONFIG</StoveConfigEdit>
+          </div>
+
+          <StoveButtons
+            activeStoveIndex={activeStoveIndex}
+            onClick={({ stoveRowIndex, stoveIndex }) => {
+              onStoveSelect(2 * stoveRowIndex + stoveIndex);
+            }}
+          />
         </>
       </Container>
     );
