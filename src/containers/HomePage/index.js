@@ -19,7 +19,7 @@ const SliderWrapper = styled('div')`
   justify-content: center;
   align-items: center;
   margin: 16px 0;
-  height: 320px;
+  height: 200px;
   > svg {
     position: relative;
     left: -21px;
@@ -36,6 +36,8 @@ const HeatText = styled('span')`
 const StoveConfigEdit = styled('button')`
   box-shadow: 3px 2px 4px #e9e9e9;
   padding: 12px;
+  margin-top: 16px;
+  color: ${primary};
 `;
 
 class HomePage extends React.Component {
@@ -59,6 +61,15 @@ class HomePage extends React.Component {
       <Container>
         <Tab activeTab={activeTabIndex} onSelectTab={this.onSelectTab} />
         <>
+          <div
+            className={css`
+              display: flex;
+              width: 100%;
+              justify-content: center;
+            `}
+          >
+            <StoveConfigEdit onClick={onEditStoveConfig}>SET CONFIG</StoveConfigEdit>
+          </div>
           <SliderWrapper>
             <HeatText>HEAT</HeatText>
             <CircleSlider
@@ -78,15 +89,6 @@ class HomePage extends React.Component {
               disabled
             />
           </SliderWrapper>
-          <div
-            className={css`
-              display: flex;
-              width: 100%;
-              justify-content: center;
-            `}
-          >
-            <StoveConfigEdit onClick={onEditStoveConfig}>SET CONFIG</StoveConfigEdit>
-          </div>
 
           <StoveButtons
             activeStoveIndex={activeStoveIndex}
