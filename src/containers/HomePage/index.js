@@ -6,9 +6,11 @@ import { CircleSlider } from 'react-circle-slider';
 
 import Tab from '../../components/Tab';
 
-import { selectHomePageState } from '../../selectors';
-import { primary, primary_bg, white, slider_bg } from '../../constants';
 import StoveButtons from '../../components/StoveButtons';
+import Timer from '../../components/Timer';
+
+import { primary, primary_bg, white, slider_bg } from '../../constants';
+import { selectHomePageState } from '../../selectors';
 
 const Container = styled('div')`
   width: 100%;
@@ -54,49 +56,65 @@ class HomePage extends React.Component {
       activeTabIndex: selectedIndex,
     });
 
-  render() {
+  renderTabContent = () => {
     const { activeTabIndex, heatSlider } = this.state;
     const { activeStoveIndex, onStoveSelect, onEditStoveConfig } = this.props;
+
+    switch (activeTabIndex) {
+      case 1: {
+        return <Timer initialTimerState={600} />;
+      }
+      case 0:
+      default: {
+        return (
+          <>
+            <div
+              className={css`
+                display: flex;
+                width: 100%;
+                justify-content: center;
+              `}
+            >
+              <StoveConfigEdit onClick={onEditStoveConfig}>SET CONFIG</StoveConfigEdit>
+            </div>
+            <SliderWrapper>
+              <HeatText>HEAT</HeatText>
+              <CircleSlider
+                value={heatSlider}
+                stepSize={26}
+                onChange={(value) => {
+                  console.log('value', value);
+                  this.setState({
+                    heatSlider: value,
+                  });
+                }}
+                circleWidth={20}
+                progressWidth={20}
+                knobRadius={10}
+                circleColor={slider_bg}
+                progressColor={primary}
+                disabled
+              />
+            </SliderWrapper>
+
+            <StoveButtons
+              activeStoveIndex={activeStoveIndex}
+              onClick={({ stoveRowIndex, stoveIndex }) => {
+                onStoveSelect(2 * stoveRowIndex + stoveIndex);
+              }}
+            />
+          </>
+        );
+      }
+    }
+  };
+
+  render() {
+    const { activeTabIndex } = this.state;
     return (
       <Container>
         <Tab activeTab={activeTabIndex} onSelectTab={this.onSelectTab} />
-        <>
-          <div
-            className={css`
-              display: flex;
-              width: 100%;
-              justify-content: center;
-            `}
-          >
-            <StoveConfigEdit onClick={onEditStoveConfig}>SET CONFIG</StoveConfigEdit>
-          </div>
-          <SliderWrapper>
-            <HeatText>HEAT</HeatText>
-            <CircleSlider
-              value={heatSlider}
-              stepSize={26}
-              onChange={(value) => {
-                console.log('value', value);
-                this.setState({
-                  heatSlider: value,
-                });
-              }}
-              circleWidth={20}
-              progressWidth={20}
-              knobRadius={10}
-              circleColor={slider_bg}
-              progressColor={primary}
-              disabled
-            />
-          </SliderWrapper>
-
-          <StoveButtons
-            activeStoveIndex={activeStoveIndex}
-            onClick={({ stoveRowIndex, stoveIndex }) => {
-              onStoveSelect(2 * stoveRowIndex + stoveIndex);
-            }}
-          />
-        </>
+        {this.renderTabContent()}
       </Container>
     );
   }
