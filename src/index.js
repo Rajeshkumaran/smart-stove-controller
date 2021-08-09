@@ -5,7 +5,7 @@ import { connectRouter } from "connected-react-router";
 import { renderRoutes } from "react-router-config";
 import { createBrowserHistory } from "history";
 import createSagaMiddleware from "redux-saga";
-import { createStore, applyMiddleware, combineReducers } from "redux";
+import { createStore, applyMiddleware, combineReducers, compose } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import reducer from "./reducers";
 import rootSaga from "./sagas";
