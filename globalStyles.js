@@ -14,7 +14,7 @@ html {
   
   body {
     font-size: 10px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: Montserrat,'Helvetica Neue', Helvetica, Arial, sans-serif;
     overflow-x:hidden ;
     -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
     margin-top: 0px !important;
@@ -23,6 +23,7 @@ html {
   }
   p{
     font-size: 14px;
+    font-family: Montserrat,'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
   img {
     border: 0;
@@ -35,14 +36,17 @@ html {
   a{
     text-decoration:none;
   }
+  span,
   li{
     list-style-type:none;
+    font-family: Montserrat,'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
   button{
     outline: none !important;
     border: none;
     background: none;
     cursor: pointer;
+    font-family: Montserrat,'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
   input:focus,

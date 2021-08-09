@@ -30,7 +30,7 @@ const SliderWrapper = styled('div')`
 
 const HeatText = styled('span')`
   position: relative;
-  right: -97px;
+  right: -80px;
   font-size: 18px;
   font-weight: bold;
   padding: 5px;
@@ -48,6 +48,7 @@ class HomePage extends React.Component {
     this.state = {
       activeTabIndex: 0,
       heatSlider: 30,
+      heatLevel: 5,
     };
   }
 
@@ -57,7 +58,7 @@ class HomePage extends React.Component {
     });
 
   renderTabContent = () => {
-    const { activeTabIndex, heatSlider } = this.state;
+    const { activeTabIndex, heatSlider, heatLevel } = this.state;
     const { activeStoveIndex, onStoveSelect, onEditStoveConfig } = this.props;
 
     switch (activeTabIndex) {
@@ -78,7 +79,7 @@ class HomePage extends React.Component {
               <StoveConfigEdit onClick={onEditStoveConfig}>SET CONFIG</StoveConfigEdit>
             </div>
             <SliderWrapper>
-              <HeatText>HEAT</HeatText>
+              <HeatText>{heatLevel}</HeatText>
               <CircleSlider
                 value={heatSlider}
                 stepSize={26}
@@ -113,8 +114,8 @@ class HomePage extends React.Component {
     const { activeTabIndex } = this.state;
     return (
       <Container>
-        <Tab activeTab={activeTabIndex} onSelectTab={this.onSelectTab} />
         {this.renderTabContent()}
+        <Tab activeTab={activeTabIndex} onSelectTab={this.onSelectTab} />
       </Container>
     );
   }

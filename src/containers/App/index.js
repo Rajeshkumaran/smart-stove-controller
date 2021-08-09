@@ -14,12 +14,19 @@ import '../../../globalStyles';
 const Wrap = styled('div')`
   background: ${primary_bg};
   height: 100vh;
+  position: relative;
 `;
 const AppName = styled('div')`
   color: ${primary};
   text-align: center;
   font-size: 16px;
   padding: 16px;
+  font-family: Montserrat;
+`;
+const BackArrow = styled('span')`
+  position: absolute;
+  left: 20px;
+  top: 20px;
 `;
 const PAGES = {
   STOVE_INFO: 'STOVE_INFO',
@@ -31,12 +38,14 @@ class App extends React.Component {
     this.state = {
       page: PAGES.STOVE_INFO,
       activeStoveIndex: 0,
+      showBackArrow: false,
     };
   }
   showStoveConfigPage = () => {
     console.log('onEditStoveConfig called');
     this.setState({
       page: PAGES.STOVE_CONFIG,
+      showBackArrow: true,
     });
   };
   renderPages = () => {
@@ -57,10 +66,22 @@ class App extends React.Component {
     }
   };
   render() {
-    const { route = {} } = this.props;
+    const { showBackArrow } = this.state;
     return (
       <Wrap>
-        <AppName>ZETA</AppName>
+        {showBackArrow && (
+          <BackArrow
+            onClick={() =>
+              this.setState({
+                showBackArrow: false,
+                page: PAGES.STOVE_INFO,
+              })
+            }
+          >
+            {'<-'}{' '}
+          </BackArrow>
+        )}
+        <AppName>ZETTA</AppName>
         {this.renderPages()}
       </Wrap>
     );

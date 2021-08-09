@@ -18,7 +18,7 @@ const SliderWrapper = styled('div')`
 `;
 const HeatText = styled('span')`
   position: relative;
-  right: -97px;
+  right: -105px;
   font-size: 18px;
   font-weight: bold;
   padding: 5px;

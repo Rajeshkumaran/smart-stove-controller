@@ -5,12 +5,16 @@ import { primary, white } from '../../constants';
 
 const Wrapper = styled('div')`
   display: flex;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 `;
 const Option = styled('span')`
   font-size: 14px;
   flex: 1;
   padding: 8px 5px;
   text-align: center;
+  font-family: Montserrat, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 `;
 function Tab({ activeTab = 0, onSelectTab }) {
   const options = [
@@ -24,8 +28,8 @@ function Tab({ activeTab = 0, onSelectTab }) {
         className={
           activeTab === index &&
           css`
-            border-bottom: 1px solid ${primary};
-            color: ${primary};
+            background: ${primary};
+            color: ${white};
           `
         }
         onClick={() => onSelectTab(index)}

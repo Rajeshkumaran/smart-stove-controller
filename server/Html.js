@@ -30,6 +30,8 @@ function Html({ store, url }) {
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, height=device-height, viewport-fit=cover"
     />
+    <link href="https://fonts.googleapis.com/css?family=Marck+Script|Montserrat:600&display=swap" rel="stylesheet">
+
     </head>
     <body>
     <script>${initialState}</script>
