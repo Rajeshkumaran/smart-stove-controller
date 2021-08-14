@@ -1,5 +1,7 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
+import StoveIcon from '../../images/stove.png';
+import TimerIcon from '../../images/timer.png';
 
 import { primary, white } from '../../constants';
 
@@ -15,11 +17,20 @@ const Option = styled('span')`
   padding: 8px 5px;
   text-align: center;
   font-family: Montserrat, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const ImageWrapper = styled('div')`
+  width: 32px;
+  height: 32px;
+  margin: 0 8px;
 `;
 function Tab({ activeTab = 0, onSelectTab }) {
   const options = [
-    { key: 'StoveTab', name: 'Stove' },
-    { key: 'TimerTab', name: 'Timer' },
+    { key: 'StoveTab', name: 'Stove', icon: StoveIcon },
+    { key: 'TimerTab', name: 'Timer', icon: TimerIcon },
   ];
   const renderOptions = () => {
     return options.map((option, index) => (
@@ -34,7 +45,10 @@ function Tab({ activeTab = 0, onSelectTab }) {
         }
         onClick={() => onSelectTab(index)}
       >
-        {option.name}
+        <span>{option.name}</span>
+        <ImageWrapper>
+          <img src={option.icon} />
+        </ImageWrapper>
       </Option>
     ));
   };
