@@ -88,7 +88,7 @@ class HomePage extends React.Component {
     const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
     this.setState((oldState) => ({
       timers: {
-        ...oldState,
+        ...oldState.timers,
         [`stove${activeStoveIndex + 1}`]: {
           ...stoveTimerConfig,
           pause: !stoveTimerConfig.pause,
@@ -126,7 +126,7 @@ class HomePage extends React.Component {
         ...oldState.timers,
         [`stove${activeStoveIndex + 1}`]: {
           ...stoveTimerConfig,
-          initialTimerState: minutes * 60 + seconds,
+          initialTimerState: Number(minutes) * 60 + Number(seconds),
         },
       },
     }));
@@ -139,7 +139,6 @@ class HomePage extends React.Component {
     switch (activeTabIndex) {
       case 1: {
         const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
-        console.log('stoveTimerConfig', stoveTimerConfig);
 
         return (
           <Timer
