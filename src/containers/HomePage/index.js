@@ -120,7 +120,6 @@ class HomePage extends React.Component {
     const { activeStoveIndex } = this.props;
     const { timers } = this.state;
     const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
-    console.log('save', minutes, seconds, minutes * 60);
     this.setState((oldState) => ({
       timers: {
         ...oldState.timers,
@@ -141,15 +140,23 @@ class HomePage extends React.Component {
         const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
 
         return (
-          <Timer
-            key={`stove${activeStoveIndex}+1-${stoveTimerConfig.initialTimerState}`}
-            initialTimerState={stoveTimerConfig.initialTimerState}
-            pause={stoveTimerConfig.pause}
-            stop={stoveTimerConfig.stop}
-            onPauseOrPlay={this.onPauseOrPlay}
-            onStop={this.onStop}
-            editTimerConfig={this.editTimerConfig}
-          />
+          <>
+            <Timer
+              key={`stove${activeStoveIndex}+1-${stoveTimerConfig.initialTimerState}`}
+              initialTimerState={stoveTimerConfig.initialTimerState}
+              pause={stoveTimerConfig.pause}
+              stop={stoveTimerConfig.stop}
+              onPauseOrPlay={this.onPauseOrPlay}
+              onStop={this.onStop}
+              editTimerConfig={this.editTimerConfig}
+            />
+            <StoveButtons
+              activeStoveIndex={activeStoveIndex}
+              onClick={({ stoveRowIndex, stoveIndex }) => {
+                onStoveSelect(2 * stoveRowIndex + stoveIndex);
+              }}
+            />
+          </>
         );
       }
       case 0:
