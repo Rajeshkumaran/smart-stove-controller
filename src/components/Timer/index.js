@@ -89,11 +89,6 @@ function Timer({
           max={initialTimerState}
           value={timerState}
           stepSize={1}
-          onChange={(value) => {
-            this.setState({
-              heatSlider: value,
-            });
-          }}
           circleWidth={20}
           progressWidth={20}
           knobRadius={10}

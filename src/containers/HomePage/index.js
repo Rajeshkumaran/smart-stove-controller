@@ -48,8 +48,6 @@ class HomePage extends React.Component {
     super(props);
     this.state = {
       activeTabIndex: 0,
-      heatSlider: 30,
-      heatLevel: 5,
       showTimerConfig: false,
       timers: {
         stove1: {
@@ -132,8 +130,9 @@ class HomePage extends React.Component {
   };
 
   renderTabContent = () => {
-    const { activeTabIndex, heatSlider, heatLevel, timers } = this.state;
-    const { activeStoveIndex, onStoveSelect, onEditStoveConfig } = this.props;
+    const { activeTabIndex, timers } = this.state;
+    const { activeStoveIndex, onStoveSelect, onEditStoveConfig, currentHeatLevel, maxHeatLevel } =
+      this.props;
 
     switch (activeTabIndex) {
       case 1: {
@@ -173,16 +172,13 @@ class HomePage extends React.Component {
               <StoveConfigEdit onClick={onEditStoveConfig}>EDIT CONFIG</StoveConfigEdit>
             </div>
             <SliderWrapper>
-              <HeatText>{heatLevel}</HeatText>
+              <HeatText>{currentHeatLevel}</HeatText>
               <CircleSlider
-                value={heatSlider}
-                stepSize={26}
-                onChange={(value) => {
-                  console.log('value', value);
-                  this.setState({
-                    heatSlider: value,
-                  });
-                }}
+                key={`slider-${currentHeatLevel}`}
+                min={0}
+                max={maxHeatLevel}
+                value={currentHeatLevel}
+                stepSize={1}
                 circleWidth={20}
                 progressWidth={20}
                 knobRadius={10}

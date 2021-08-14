@@ -1,7 +1,7 @@
-import React from "react";
-import styled, { keyframes } from "react-emotion";
-import { ALLY_BLUE } from "../../constants";
-const Wrapper = styled("div")`
+import React from 'react';
+import styled, { keyframes } from 'react-emotion';
+import { primary } from '../../constants';
+const Wrapper = styled('div')`
   text-align: center;
 `;
 const ellipsisAnimation1 = keyframes`
@@ -28,19 +28,20 @@ const ellipsisAnimation3 = keyframes`
     transform: scale(0);
   }
 `;
-const Container = styled("div")`
+const Container = styled('div')`
   display: inline-block;
   position: relative;
   width: 64px;
   height: 64px;
-
+  position: fixed;
+  top: 45%;
   & div {
     position: absolute;
     top: 27px;
     width: 11px;
     height: 11px;
     border-radius: 50%;
-    background: ${ALLY_BLUE};
+    background: ${primary};
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
   }
   & div:nth-child(1) {
@@ -64,7 +65,7 @@ const Container = styled("div")`
 function Loader(props) {
   return (
     <Wrapper>
-      <Container className="ellpsis-loader" {...props}>
+      <Container className='ellpsis-loader' {...props}>
         <div />
         <div />
         <div />

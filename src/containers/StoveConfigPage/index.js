@@ -1,7 +1,8 @@
 import React from 'react';
 import styled, { css } from 'react-emotion';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+
+import Button from '../../components/Button';
 
 const Container = styled('div')`
   width: 100%;
@@ -35,16 +36,24 @@ const RowName = styled('p')`
 class StoveConfigPage extends React.Component {
   constructor(props) {
     super(props);
+    const { stoveConfigs } = this.props;
+    const {
+      no_of_heat_levels: noOfHeatLevels = 5,
+      current_heat_level: currentHeatLevel = 0,
+      angle = '',
+    } = stoveConfigs || {};
+    console.log('StoveConfigPage constructor', stoveConfigs);
     this.state = {
-      noOfHeatLevels: 5,
+      noOfHeatLevels,
       stoveKey: '',
-      currentHeatLevel: 0,
+      currentHeatLevel,
+      angle,
     };
   }
 
   render() {
-    const { stoveId, angle = '0' } = this.props;
-    const { noOfHeatLevels, stoveKey, currentHeatLevel } = this.state;
+    const { stoveId } = this.props;
+    const { noOfHeatLevels, stoveKey, currentHeatLevel, angle } = this.state;
     return (
       <Container>
         <StoveIdText>Stove {stoveId + 1}</StoveIdText>
@@ -88,20 +97,15 @@ class StoveConfigPage extends React.Component {
         </Row>
         <Row>
           <RowName>Angle</RowName>
-          <Input type='text' width={40} value={angle} />
+          <Input type='text' width={60} value={angle} />
         </Row>
+        <Button>Update</Button>
       </Container>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {};
-};
-const mapDispatchToProps = (dispatch) => {
-  return { dispatch };
-};
 StoveConfigPage.propTypes = {
   route: PropTypes.object,
 };
-export default connect(mapStateToProps, mapDispatchToProps)(StoveConfigPage);
+export default StoveConfigPage;

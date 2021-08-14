@@ -7,7 +7,7 @@ const StoveWrapper = styled('span')`
   flex-direction: column;
   justify-content: space-evenly;
   position: fixed;
-  bottom: 40px;
+  bottom: 65px;
   width: 100%;
 `;
 const StoveRow = styled('div')`
