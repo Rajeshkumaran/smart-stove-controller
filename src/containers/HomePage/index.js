@@ -8,6 +8,7 @@ import Tab from '../../components/Tab';
 
 import StoveButtons from '../../components/StoveButtons';
 import Timer from '../../components/Timer';
+import TimerConfigModal from '../../components/TimerConfigModal';
 
 import { primary, primary_bg, white, slider_bg } from '../../constants';
 import { selectHomePageState } from '../../selectors';
@@ -49,6 +50,29 @@ class HomePage extends React.Component {
       activeTabIndex: 0,
       heatSlider: 30,
       heatLevel: 5,
+      showTimerConfig: false,
+      timers: {
+        stove1: {
+          initialTimerState: 600,
+          pause: true,
+          stop: false,
+        },
+        stove2: {
+          initialTimerState: 600,
+          pause: true,
+          stop: false,
+        },
+        stove3: {
+          initialTimerState: 600,
+          pause: true,
+          stop: false,
+        },
+        stove4: {
+          initialTimerState: 600,
+          pause: true,
+          stop: false,
+        },
+      },
     };
   }
 
@@ -57,13 +81,77 @@ class HomePage extends React.Component {
       activeTabIndex: selectedIndex,
     });
 
+  onPauseOrPlay = () => {
+    const { activeStoveIndex } = this.props;
+    const { timers } = this.state;
+
+    const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
+    this.setState((oldState) => ({
+      timers: {
+        ...oldState,
+        [`stove${activeStoveIndex + 1}`]: {
+          ...stoveTimerConfig,
+          pause: !stoveTimerConfig.pause,
+          stop: false,
+        },
+      },
+    }));
+  };
+
+  onStop = () => {
+    const { activeStoveIndex } = this.props;
+    const { timers } = this.state;
+    const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
+    this.setState((oldState) => ({
+      timers: {
+        ...oldState.timers,
+        [`stove${activeStoveIndex + 1}`]: { ...stoveTimerConfig, stop: true, pause: true },
+      },
+    }));
+  };
+
+  editTimerConfig = () => {
+    this.setState({
+      showTimerConfig: true,
+    });
+  };
+
+  onSaveTimerConfig = (minutes, seconds) => {
+    const { activeStoveIndex } = this.props;
+    const { timers } = this.state;
+    const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
+    console.log('save', minutes, seconds, minutes * 60);
+    this.setState((oldState) => ({
+      timers: {
+        ...oldState.timers,
+        [`stove${activeStoveIndex + 1}`]: {
+          ...stoveTimerConfig,
+          initialTimerState: minutes * 60 + seconds,
+        },
+      },
+    }));
+  };
+
   renderTabContent = () => {
-    const { activeTabIndex, heatSlider, heatLevel } = this.state;
+    const { activeTabIndex, heatSlider, heatLevel, timers } = this.state;
     const { activeStoveIndex, onStoveSelect, onEditStoveConfig } = this.props;
 
     switch (activeTabIndex) {
       case 1: {
-        return <Timer initialTimerState={600} />;
+        const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
+        console.log('stoveTimerConfig', stoveTimerConfig);
+
+        return (
+          <Timer
+            key={`stove${activeStoveIndex}+1-${stoveTimerConfig.initialTimerState}`}
+            initialTimerState={stoveTimerConfig.initialTimerState}
+            pause={stoveTimerConfig.pause}
+            stop={stoveTimerConfig.stop}
+            onPauseOrPlay={this.onPauseOrPlay}
+            onStop={this.onStop}
+            editTimerConfig={this.editTimerConfig}
+          />
+        );
       }
       case 0:
       default: {
@@ -76,7 +164,7 @@ class HomePage extends React.Component {
                 justify-content: center;
               `}
             >
-              <StoveConfigEdit onClick={onEditStoveConfig}>SET CONFIG</StoveConfigEdit>
+              <StoveConfigEdit onClick={onEditStoveConfig}>EDIT CONFIG</StoveConfigEdit>
             </div>
             <SliderWrapper>
               <HeatText>{heatLevel}</HeatText>
@@ -111,11 +199,20 @@ class HomePage extends React.Component {
   };
 
   render() {
-    const { activeTabIndex } = this.state;
+    const { activeTabIndex, showTimerConfig } = this.state;
     return (
       <Container>
         {this.renderTabContent()}
         <Tab activeTab={activeTabIndex} onSelectTab={this.onSelectTab} />
+        <TimerConfigModal
+          show={showTimerConfig}
+          onSave={this.onSaveTimerConfig}
+          onCancel={() =>
+            this.setState({
+              showTimerConfig: false,
+            })
+          }
+        />
       </Container>
     );
   }

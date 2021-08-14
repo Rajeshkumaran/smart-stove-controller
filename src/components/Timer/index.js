@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { CircleSlider } from 'react-circle-slider';
 import styled from 'react-emotion';
 
 import { primary, slider_bg } from '../../constants';
+import Button from '../Button';
 
 const SliderWrapper = styled('div')`
   width: 100%;
@@ -11,64 +12,101 @@ const SliderWrapper = styled('div')`
   align-items: center;
   margin: 16px 0;
   height: 200px;
+  cursor: pointer;
   > svg {
     position: relative;
-    left: -21px;
+    left: -28px;
   }
 `;
 const HeatText = styled('span')`
   position: relative;
-  right: -105px;
+  right: -96px;
   font-size: 18px;
   font-weight: bold;
   padding: 5px;
 `;
-function Timer({ initialTimerState }) {
+const ConfigWrap = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const Stopbutton = styled(Button)`
+  margin-left: 12px;
+`;
+function Timer({
+  initialTimerState,
+  pause = false,
+  stop = false,
+  onPauseOrPlay = () => {},
+  onStop = () => {},
+  editTimerConfig,
+}) {
+  const timerRef = useRef();
   const [timerState, setTimerState] = useState(initialTimerState);
 
   useEffect(() => {
-    const timerId = setInterval(() => {
-      setTimerState((prevTimerState) => prevTimerState - 1);
-    }, 1000);
-  }, []);
+    setTimerState(initialTimerState);
+  }, [initialTimerState]);
 
+  useEffect(() => {
+    if (pause) {
+      clearTimer();
+    } else if (!pause) {
+      // restart timer
+      if (!timerRef.current.timerId) {
+        timerRef.current.timerId = setInterval(() => {
+          setTimerState((prevTimerState) => prevTimerState - 1);
+        }, 1000);
+      }
+    }
+    if (stop) {
+      clearTimer();
+      setTimerState(initialTimerState);
+    }
+  }, [pause, stop]);
+
+  const clearTimer = () => {
+    clearInterval(timerRef.current.timerId);
+    timerRef.current.timerId = null;
+  };
   const addLeadingZeros = (time) => {
     if (time.toString().length < 2) return `0${time}`;
-    return time;
-  };
-  const addTrailingZeros = (time) => {
-    if (time.toString().length < 2) return `${time}0`;
     return time;
   };
 
   const formatTime = () => {
     let minutes = addLeadingZeros(Math.floor(timerState / 60));
-    let seconds = addTrailingZeros(timerState % 60);
+    let seconds = addLeadingZeros(timerState % 60);
     return `${minutes} : ${seconds}`;
   };
 
   return (
-    <SliderWrapper>
-      <HeatText>{formatTime()}</HeatText>
-      <CircleSlider
-        min={0}
-        max={600}
-        value={timerState}
-        stepSize={1}
-        onChange={(value) => {
-          console.log('value', value);
-          this.setState({
-            heatSlider: value,
-          });
-        }}
-        circleWidth={20}
-        progressWidth={20}
-        knobRadius={10}
-        circleColor={slider_bg}
-        progressColor={primary}
-        disabled
-      />
-    </SliderWrapper>
+    <div ref={timerRef}>
+      <SliderWrapper onClick={editTimerConfig}>
+        <HeatText>{formatTime()}</HeatText>
+        <CircleSlider
+          min={0}
+          max={initialTimerState}
+          value={timerState}
+          stepSize={1}
+          onChange={(value) => {
+            this.setState({
+              heatSlider: value,
+            });
+          }}
+          circleWidth={20}
+          progressWidth={20}
+          knobRadius={10}
+          circleColor={slider_bg}
+          progressColor={primary}
+          disabled
+        />
+      </SliderWrapper>
+      <ConfigWrap>
+        <Button onClick={onPauseOrPlay}>{pause ? 'Play' : 'Pause'}</Button>
+        <Stopbutton onClick={onStop}>Stop</Stopbutton>
+      </ConfigWrap>
+    </div>
   );
 }
 export default Timer;

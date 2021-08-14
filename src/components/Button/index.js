@@ -1,34 +1,34 @@
-import React, { useState } from "react";
-import styled, { css, cx } from "react-emotion";
-import { RL_PINK } from "../../constants";
-import { MontserratBold } from "../../utils/fonts";
-const Wrap = styled("button")`
+import React, { useState } from 'react';
+import styled, { css, cx } from 'react-emotion';
+import { primary } from '../../constants';
+import { MontserratBold } from '../../utils/fonts';
+const Wrap = styled('button')`
   outline: none;
   background: #fff;
-  border: 1px solid ${RL_PINK};
-  padding: 1.2rem;
+  border: 1px solid ${primary};
+  padding: 8px 12px;
   color: #000;
   border-radius: 1rem;
-  font-size: 1.4rem;
+  font-size: 14px;
   font-family: ${MontserratBold};
   cursor: pointer;
   @media (max-width: 992px) {
     cursor: default;
   }
 `;
-function Button({ className, children, ...otherProps }) {
+function Button({ className, children, ignoreHoverState = false, ...otherProps }) {
   const [hoveredState, setHoverState] = useState(false);
 
   return (
     <Wrap
       className={cx(
         className,
-        hoveredState
+        hoveredState && !ignoreHoverState
           ? css`
-              background: ${RL_PINK};
+              background: ${primary};
               color: #fff;
             `
-          : "",
+          : '',
       )}
       onMouseOver={() => setHoverState(true)}
       onMouseLeave={() => setHoverState(false)}

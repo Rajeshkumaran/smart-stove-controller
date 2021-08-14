@@ -1,13 +1,13 @@
-import React from "react";
-import styled, { css } from "react-emotion";
+import React from 'react';
+import styled, { css } from 'react-emotion';
 
-const OverlayBackground = styled("div")`
+const OverlayBackground = styled('div')`
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 class Overlay extends React.PureComponent {
