@@ -8,12 +8,12 @@ import BackIcon from '../../images/back.png';
 import HomePage from '../HomePage';
 import StoveConfigPage from '../StoveConfigPage';
 
-import firebase from '../../utils/firebaseConfig';
-
 import { primary, primary_bg } from '../../constants';
 
 import '../../../globalStyles';
 import Loader from '../../components/Loader';
+import { get, setItemInLocalStorage, getItemFromLocalStorage } from '../../utils/helpers';
+import axiosWrapper from '../../utils/requestWrapper';
 
 const Wrap = styled('div')`
   background: ${primary_bg};
@@ -47,33 +47,96 @@ class App extends React.Component {
       showBackArrow: false,
       stoveConfigs: {},
       showLoader: true,
+      stoveKeyInput: '',
+      bgProcessStates: {
+        stove1: {
+          processRunning: false,
+          processId: null,
+        },
+        stove2: {
+          processRunning: false,
+          processId: null,
+        },
+        stove3: {
+          processRunning: false,
+          processId: null,
+        },
+        stove4: {
+          processRunning: false,
+          processId: null,
+        },
+      },
     };
   }
 
-  componentDidMount() {
-    const ref = firebase.firestore().collection('stoves');
+  initConfigs = () => {
+    const configs = getItemFromLocalStorage('stoves');
+    console.log('stoves', configs);
 
-    if (ref) {
-      const stoveConfigs = [];
-      ref.onSnapshot((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          console.log('doc', doc.data());
-          stoveConfigs.push(doc.data());
-        });
-        this.setState({
-          showLoader: false,
-          stoveConfigs: {
-            ...stoveConfigs.reduce(
-              (acc, config) => ({
-                ...acc,
-                [config.id]: config,
-              }),
-              {},
-            ),
-          },
-        });
-      });
-    }
+    const stoveConfigs = {
+      ...(configs
+        ? { ...configs }
+        : {
+            stove1: {
+              no_of_heat_levels: 7,
+              angles: {
+                1: '',
+                2: '',
+                3: '',
+                4: '',
+                5: '',
+                6: '',
+                7: '',
+              },
+            },
+            stove2: {
+              no_of_heat_levels: 7,
+              angles: {
+                1: '',
+                2: '',
+                3: '',
+                4: '',
+                5: '',
+                6: '',
+                7: '',
+              },
+            },
+            stove3: {
+              no_of_heat_levels: 7,
+              angles: {
+                1: '',
+                2: '',
+                3: '',
+                4: '',
+                5: '',
+                6: '',
+                7: '',
+              },
+            },
+            stove4: {
+              no_of_heat_levels: 7,
+              angles: {
+                1: '',
+                2: '',
+                3: '',
+                4: '',
+                5: '',
+                6: '',
+                7: '',
+              },
+            },
+          }),
+    };
+
+    setItemInLocalStorage('stoves', stoveConfigs);
+    this.setState({
+      showLoader: false,
+      stoveConfigs,
+    });
+  };
+
+  componentDidMount() {
+    this.initConfigs();
   }
 
   showStoveConfigPage = () => {
@@ -82,14 +145,130 @@ class App extends React.Component {
       showBackArrow: true,
     });
   };
+
+  updateStoveKey = (stoveKey) => {
+    this.setState({
+      stoveKeyInput: stoveKey,
+    });
+  };
+
+  registerApiKey = () => {
+    const { activeStoveIndex, stoveKeyInput } = this.state;
+    const stoves = getItemFromLocalStorage('stoves');
+    const newConfigs = {
+      ...(stoves ? { ...stoves } : {}),
+      [`stove${activeStoveIndex + 1}`]: {
+        ...get(stoves, `stove${activeStoveIndex + 1}`, {}),
+        key: stoveKeyInput,
+      },
+    };
+    setItemInLocalStorage('stoves', newConfigs);
+  };
+
+  onCalibrate = async (heatLevel) => {
+    const { activeStoveIndex } = this.state;
+    console.log('onCalibrate called');
+    const stoveConfigs = getItemFromLocalStorage('stoves');
+    const stoveConfig = stoveConfigs[`stove${activeStoveIndex + 1}`];
+    console.log('stoveConfig', stoveConfig);
+    try {
+      const response = await axiosWrapper({
+        url: `https://api.thingspeak.com/channels/1309022/fields/${
+          activeStoveIndex + 1
+        }.json?api_key=${stoveConfig.key}&results=`,
+      });
+      const parseResponse = get(response, 'data');
+      console.log('response', parseResponse);
+      this.updateStoveConfig('angles', {
+        ...stoveConfig.angles,
+        [heatLevel]: 30,
+      });
+    } catch (err) {
+      console.error('Error in calibration', err);
+    }
+  };
+
+  updateStoveConfig = (key, value) => {
+    const { activeStoveIndex } = this.state;
+
+    let stoveConfigs = getItemFromLocalStorage('stoves');
+    let stoveConfig = stoveConfigs[`stove${activeStoveIndex + 1}`];
+    stoveConfig = {
+      ...stoveConfig,
+      [key]: value,
+    };
+    stoveConfigs = {
+      ...stoveConfigs,
+      [`stove${activeStoveIndex + 1}`]: stoveConfig,
+    };
+    setItemInLocalStorage('stoves', stoveConfigs);
+    this.setState({
+      stoveConfigs,
+    });
+  };
+
+  syncApi = async () => {
+    try {
+      const { activeStoveIndex } = this.state;
+      const stoveConfigs = getItemFromLocalStorage('stoves');
+      const stoveConfig = stoveConfigs[`stove${activeStoveIndex + 1}`];
+
+      const response = await axiosWrapper({
+        url: `https://api.thingspeak.com/channels/1309022/fields/${
+          activeStoveIndex + 1
+        }.json?api_key=${stoveConfig.key}&results=`,
+      });
+      const parseResponse = get(response, 'data');
+      console.log('response', parseResponse);
+    } catch (err) {
+      console.error('Error in calibration', err);
+    }
+  };
+  onSyncStove = () => {
+    const { activeStoveIndex, bgProcessStates } = this.state;
+    const stoveConfigs = getItemFromLocalStorage('stoves');
+
+    const stoveAngles = stoveConfigs[`stove${activeStoveIndex + 1}`].angles;
+
+    // all the angles should be calibrated before making sync
+    let allowSync = true;
+    console.log('stoveAngles', stoveAngles);
+    Object.keys(stoveAngles).map((heatLevel) => {
+      const angle = stoveAngles[heatLevel];
+      if (!angle) {
+        allowSync = false;
+      }
+    });
+
+    if (!bgProcessStates[`stove${activeStoveIndex + 1}.processRunning`] && allowSync) {
+      const timerId = setInterval(() => {
+        this.syncApi();
+      }, 5000);
+      this.setState({
+        bgProcessStates: {
+          ...this.state.bgProcessStates,
+          [`stove${activeStoveIndex + 1}`]: {
+            processRunning: true,
+            processId: timerId,
+          },
+        },
+      });
+    }
+  };
+
   renderPages = () => {
-    const { activeStoveIndex, page, stoveConfigs } = this.state;
+    const { activeStoveIndex, page, stoveConfigs, stoveKeyInput } = this.state;
     switch (page) {
       case PAGES.STOVE_CONFIG:
         return (
           <StoveConfigPage
             stoveId={activeStoveIndex}
             stoveConfigs={stoveConfigs[`stove${activeStoveIndex + 1}`]}
+            stoveKeyInput={stoveKeyInput}
+            updateStoveKey={this.updateStoveKey}
+            registerApiKey={this.registerApiKey}
+            onCalibrate={this.onCalibrate}
+            onSyncStove={this.onSyncStove}
           />
         );
 

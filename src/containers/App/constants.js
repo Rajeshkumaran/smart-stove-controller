@@ -1,0 +1,1 @@
+export const CALIBRATE_FOR_STOVE = 'app/REGISTER_KEY_FOR_STOVE';

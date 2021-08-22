@@ -1,6 +1,6 @@
-import homePage from "../containers/HomePage/reducer";
+import appReducer from '../containers/App/reducer';
 const rootReducer = {
-  homePage,
+  appReducer,
 };
 
 export default rootReducer;

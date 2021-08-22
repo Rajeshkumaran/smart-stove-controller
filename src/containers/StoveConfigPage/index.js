@@ -19,7 +19,7 @@ const Row = styled('div')`
   align-items: center;
   justify-content: space-between;
   margin: 16px 0;
-  width: 200px;
+  width: 300px;
 `;
 const Input = styled('input')`
   background: white;
@@ -33,27 +33,35 @@ const Input = styled('input')`
 const RowName = styled('p')`
   margin-right: 10px;
 `;
+const Calibrate = styled(Button)`
+  margin-left: 10px;
+`;
 class StoveConfigPage extends React.Component {
   constructor(props) {
     super(props);
     const { stoveConfigs } = this.props;
-    const {
-      no_of_heat_levels: noOfHeatLevels = 5,
-      current_heat_level: currentHeatLevel = 0,
-      angle = '',
-    } = stoveConfigs || {};
+    const { no_of_heat_levels: noOfHeatLevels = 5, current_heat_level: currentHeatLevel = 0 } =
+      stoveConfigs || {};
     console.log('StoveConfigPage constructor', stoveConfigs);
     this.state = {
       noOfHeatLevels,
-      stoveKey: '',
       currentHeatLevel,
-      angle,
     };
   }
 
   render() {
-    const { stoveId } = this.props;
-    const { noOfHeatLevels, stoveKey, currentHeatLevel, angle } = this.state;
+    const {
+      stoveId,
+      stoveKeyInput,
+      stoveConfigs,
+      updateStoveKey,
+      registerApiKey,
+      onCalibrate,
+      onSyncStove,
+    } = this.props;
+    const { noOfHeatLevels, currentHeatLevel } = this.state;
+    const currentAngle = stoveConfigs.angles[currentHeatLevel + ''] || '0';
+
     return (
       <Container>
         <StoveIdText>Stove {stoveId + 1}</StoveIdText>
@@ -62,30 +70,20 @@ class StoveConfigPage extends React.Component {
           <Input
             placeholder='Enter ID'
             width={120}
-            value={stoveKey}
-            onChange={(e) => this.setState({ stoveKey: e.target.value })}
+            value={stoveKeyInput}
+            onChange={(e) => updateStoveKey(e.target.value)}
           />
+          <Button onClick={registerApiKey}>Register key</Button>
         </Row>
         <Row>
           <RowName>No of Heat levels</RowName>
-          <Input
-            type='number'
-            min='3'
-            max='9'
-            value={noOfHeatLevels}
-            onChange={(e) =>
-              this.setState({
-                noOfHeatLevels: e.target.value,
-                currentHeatLevel: 0,
-              })
-            }
-          />
+          <Input type='number' max='7' value={noOfHeatLevels} disabled />
         </Row>
         <Row>
           <RowName>Set current Heat level</RowName>
           <Input
             type='number'
-            min='0'
+            min='1'
             max={noOfHeatLevels}
             value={currentHeatLevel}
             onChange={(e) =>
@@ -94,12 +92,13 @@ class StoveConfigPage extends React.Component {
               })
             }
           />
+          <Calibrate onClick={() => onCalibrate(currentHeatLevel)}>Calibrate</Calibrate>
         </Row>
         <Row>
           <RowName>Angle</RowName>
-          <Input type='text' width={60} value={angle} />
+          <Input type='text' width={60} value={currentAngle} />
         </Row>
-        <Button>Update</Button>
+        <Button onClick={onSyncStove}>Sync</Button>
       </Container>
     );
   }
@@ -107,5 +106,6 @@ class StoveConfigPage extends React.Component {
 
 StoveConfigPage.propTypes = {
   route: PropTypes.object,
+  registerApiKey: PropTypes.func,
 };
 export default StoveConfigPage;

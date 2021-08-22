@@ -1,19 +1,19 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { ConnectedRouter } from "connected-react-router";
-import { connectRouter } from "connected-react-router";
-import { renderRoutes } from "react-router-config";
-import { createBrowserHistory } from "history";
-import createSagaMiddleware from "redux-saga";
-import { createStore, applyMiddleware, combineReducers, compose } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
-import reducer from "./reducers";
-import rootSaga from "./sagas";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ConnectedRouter } from 'connected-react-router';
+import { connectRouter } from 'connected-react-router';
+import { renderRoutes } from 'react-router-config';
+import { createBrowserHistory } from 'history';
+import createSagaMiddleware from 'redux-saga';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import reducer from './reducers';
+import rootSaga from './sagas';
 // import configureStore from './configureStore';
-import routes from "./routes";
-import { Provider } from "react-redux";
-import { ROUTER_STORE_KEY } from "./constants";
-import "./utils/fonts.css";
+import routes from './routes';
+import { Provider } from 'react-redux';
+import { ROUTER_STORE_KEY } from './constants';
+import './utils/fonts.css';
 
 const preloadedState =
   // eslint-disable-next-line no-underscore-dangle
@@ -26,7 +26,7 @@ delete window.__INITIAL_STATE__;
 const history = createBrowserHistory();
 // const store = configureStore(preloadedState, history);
 const composeEnhancers =
-  process.env.NODE_ENV !== "production" && typeof window === "object"
+  process.env.NODE_ENV !== 'production' && typeof window === 'object'
     ? composeWithDevTools({ shouldHotReload: true, trace: true }) // Change this to false if app re-renders on `replaceReducer`
     : compose;
 
@@ -47,13 +47,13 @@ const rootReducer = combineReducers({
 });
 const store = createStore(
   rootReducer,
-  composeEnhancers(applyMiddleware(sagaMiddleware)),
+  // composeEnhancers(applyMiddleware(sagaMiddleware)),
 );
-typeof window === "object" && sagaMiddleware.run(rootSaga);
+// typeof window === "object" && sagaMiddleware.run(rootSaga);
 // const initialState = window.initialState;
 ReactDOM.hydrate(
   <Provider store={store}>
     <ConnectedRouter history={history}>{renderRoutes(routes)}</ConnectedRouter>
   </Provider>,
-  document.getElementById("root"),
+  document.getElementById('root'),
 );

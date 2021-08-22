@@ -1,8 +1,8 @@
 export const get = (from, selector, defaultVal) => {
   const value = selector
-    .replace(/\[([^[\]]*)\]/g, ".$1.")
-    .split(".")
-    .filter((t) => t !== "")
+    .replace(/\[([^[\]]*)\]/g, '.$1.')
+    .split('.')
+    .filter((t) => t !== '')
     .reduce((prev, cur) => prev && prev[cur], from);
   return value === undefined || value === null ? defaultVal : value;
 };
@@ -11,7 +11,7 @@ const findChildObjectives = (okrs, id) => {
 };
 export const formatOkrData = (okrs = []) => {
   if (!okrs) return [];
-  const parentObjectives = okrs.filter((okr) => okr.parent_objective_id === "");
+  const parentObjectives = okrs.filter((okr) => okr.parent_objective_id === '');
   let formattedData = [];
 
   parentObjectives.map((parentObjtve) => {
@@ -31,4 +31,19 @@ export const findCategories = (okrs = []) => {
     return null;
   });
   return [...categories];
+};
+
+export const setItemInLocalStorage = (key, value) => {
+  if (typeof window === 'object') {
+    const stoveInfoStorage = window.localStorage;
+    stoveInfoStorage.setItem(key, JSON.stringify(value));
+  }
+};
+
+export const getItemFromLocalStorage = (key) => {
+  if (typeof window === 'object') {
+    const stoveInfoStorage = window.localStorage;
+    const data = stoveInfoStorage.getItem(key);
+    return data ? JSON.parse(data) : data;
+  }
 };
