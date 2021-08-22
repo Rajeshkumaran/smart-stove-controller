@@ -172,7 +172,7 @@ class HomePage extends React.Component {
               <StoveConfigEdit onClick={onEditStoveConfig}>EDIT CONFIG</StoveConfigEdit>
             </div>
             <SliderWrapper>
-              <HeatText>{currentHeatLevel}</HeatText>
+              <HeatText>{currentHeatLevel || 0}</HeatText>
               <CircleSlider
                 key={`slider-${currentHeatLevel}`}
                 min={0}

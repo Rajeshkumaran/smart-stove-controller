@@ -220,6 +220,12 @@ class App extends React.Component {
       });
       const parseResponse = get(response, 'data');
       console.log('response', parseResponse);
+      this.setState({
+        stoveConfigs: {
+          ...this.state.stoveConfigs,
+          currentHeatLevel: 4,
+        },
+      });
     } catch (err) {
       console.error('Error in calibration', err);
     }
@@ -276,18 +282,11 @@ class App extends React.Component {
       default: {
         const { activeStoveIndex, stoveConfigs } = this.state;
         const currentSelectedStove = stoveConfigs[`stove${activeStoveIndex + 1}`] || {};
-        console.log(
-          'stoveConfigs',
-          currentSelectedStove,
-          currentSelectedStove.current_heat_level,
-          currentSelectedStove.no_of_heat_levels,
-          this.state.showLoader,
-        );
 
         return (
           <HomePage
             activeStoveIndex={activeStoveIndex}
-            currentHeatLevel={currentSelectedStove.current_heat_level}
+            currentHeatLevel={currentSelectedStove.currentHeatLevel}
             maxHeatLevel={currentSelectedStove.no_of_heat_levels}
             onStoveSelect={(stoveId) => this.setState({ activeStoveIndex: stoveId })}
             onEditStoveConfig={this.showStoveConfigPage}
