@@ -178,10 +178,12 @@ class App extends React.Component {
         }.json?api_key=${stoveConfig.key}&results=`,
       });
       const parseResponse = get(response, 'data');
-      console.log('response', parseResponse);
+      const feeds = get(parseResponse, 'feeds', []);
+      const feedsLength = feeds.length;
+      const angle = get(feeds[feedsLength - 1], 'field1', 0);
       this.updateStoveConfig('angles', {
         ...stoveConfig.angles,
-        [heatLevel]: 30,
+        [heatLevel]: angle,
       });
     } catch (err) {
       console.error('Error in calibration', err);
@@ -207,23 +209,36 @@ class App extends React.Component {
     });
   };
 
-  syncApi = async () => {
+  syncApi = async ({ stoveId, stoveIndex }) => {
     try {
-      const { activeStoveIndex } = this.state;
       const stoveConfigs = getItemFromLocalStorage('stoves');
-      const stoveConfig = stoveConfigs[`stove${activeStoveIndex + 1}`];
+      const stoveConfig = stoveConfigs[stoveId];
 
       const response = await axiosWrapper({
-        url: `https://api.thingspeak.com/channels/1309022/fields/${
-          activeStoveIndex + 1
-        }.json?api_key=${stoveConfig.key}&results=`,
+        url: `https://api.thingspeak.com/channels/1309022/fields/${stoveIndex}.json?api_key=${stoveConfig.key}&results=`,
       });
       const parseResponse = get(response, 'data');
-      console.log('response', parseResponse);
+      const feeds = get(parseResponse, 'feeds', []);
+      const feedsLength = feeds.length;
+      const angle = get(feeds[feedsLength - 1], 'field1', 0);
+      console.log('stoveConfig', stoveConfig, angle);
+      const { angles } = stoveConfig || {};
+      let requiredHeatLevel = -1;
+      Object.keys(angles).map((heatLevel) => {
+        if (requiredHeatLevel === -1 && angle <= angles[heatLevel]) {
+          const angle1 = Math.abs(angles[heatLevel - 1] || 0 - angle);
+          const angle2 = Math.abs(angles[heatLevel] - angle);
+          if (angle1 < angle2) requiredHeatLevel = heatLevel - 1;
+          requiredHeatLevel = heatLevel;
+        }
+      });
       this.setState({
         stoveConfigs: {
           ...this.state.stoveConfigs,
-          currentHeatLevel: 4,
+          [`stove${stoveIndex}`]: {
+            ...stoveConfig,
+            currentHeatLevel: requiredHeatLevel,
+          },
         },
       });
     } catch (err) {
@@ -248,7 +263,7 @@ class App extends React.Component {
 
     if (!bgProcessStates[`stove${activeStoveIndex + 1}.processRunning`] && allowSync) {
       const timerId = setInterval(() => {
-        this.syncApi();
+        this.syncApi({ stoveId: `stove${activeStoveIndex + 1}`, stoveIndex: activeStoveIndex + 1 });
       }, 5000);
       this.setState({
         bgProcessStates: {
@@ -282,7 +297,7 @@ class App extends React.Component {
       default: {
         const { activeStoveIndex, stoveConfigs } = this.state;
         const currentSelectedStove = stoveConfigs[`stove${activeStoveIndex + 1}`] || {};
-
+        console.log('PAGES.STOVE_INFO > stoveConfigs', stoveConfigs, currentSelectedStove);
         return (
           <HomePage
             activeStoveIndex={activeStoveIndex}
