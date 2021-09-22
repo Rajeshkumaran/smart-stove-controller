@@ -334,7 +334,7 @@ class App extends React.Component {
             />
           </BackArrow>
         )}
-        <AppName>ZETTA</AppName>
+        <AppName>Zetta</AppName>
         {this.renderPages()}
       </Wrap>
     );

@@ -36,6 +36,17 @@ const RowName = styled('p')`
 const Calibrate = styled(Button)`
   margin-left: 10px;
 `;
+const Angle = styled('span')`
+  background: white;
+  height: 32px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 2px 4px #e9e9e9;
+  border-radius: 4px;
+  font-size: 14px;
+`;
 class StoveConfigPage extends React.Component {
   constructor(props) {
     super(props);
@@ -96,7 +107,7 @@ class StoveConfigPage extends React.Component {
         </Row>
         <Row>
           <RowName>Angle</RowName>
-          <Input type='text' width={60} value={currentAngle} />
+          <Angle>{currentAngle}</Angle>
         </Row>
         <Button onClick={onSyncStove}>Sync</Button>
       </Container>
