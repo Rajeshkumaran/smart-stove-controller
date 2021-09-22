@@ -42,6 +42,7 @@ function Timer({
   editTimerConfig,
 }) {
   const timerRef = useRef();
+  const currentTimerValue = useRef();
   const [timerState, setTimerState] = useState(initialTimerState);
 
   useEffect(() => {
@@ -49,13 +50,26 @@ function Timer({
   }, [initialTimerState]);
 
   useEffect(() => {
+    if (timerState - 1 === 0) {
+      clearTimer();
+      setTimerState(initialTimerState);
+      return;
+    }
     if (pause) {
       clearTimer();
     } else if (!pause) {
       // restart timer
       if (!timerRef.current.timerId) {
         timerRef.current.timerId = setInterval(() => {
-          setTimerState((prevTimerState) => prevTimerState - 1);
+          if (currentTimerValue.current && currentTimerValue.current - 1 === 0) {
+            clearTimer();
+            setTimerState(initialTimerState);
+            return;
+          }
+          setTimerState((prevTimerState) => {
+            currentTimerValue.current = prevTimerState - 1;
+            return prevTimerState - 1;
+          });
         }, 1000);
       }
     }
