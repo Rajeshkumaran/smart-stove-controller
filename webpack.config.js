@@ -1,11 +1,11 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 module.exports = {
-  entry: "./src/index.js",
+  entry: './src/index.js',
   output: {
-    path: path.resolve("public"),
-    filename: "bundle.js",
+    path: path.resolve('public'),
+    filename: 'bundle.js',
   },
   module: {
     rules: [
@@ -13,23 +13,23 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
         },
       },
       {
         // Preprocess 3rd party .css files located in node_modules
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(jpg|jpeg|png|gif|ico)$/,
         use: [
           {
-            loader: "file-loader",
+            loader: 'file-loader',
             options: {
               // Inline files smaller than 10 kB
               limit: 10000,
-              name: "/[name].[ext]",
+              name: '/[name].[ext]',
             },
           },
         ],
@@ -37,16 +37,16 @@ module.exports = {
       {
         // Preprocess 3rd party .css files located in node_modules
         test: /\.ttf$/,
-        use: ["url-loader"],
+        use: ['url-loader'],
       },
       {
         test: /\.svg$/,
         use: [
           {
-            loader: "babel-loader",
+            loader: 'babel-loader',
           },
           {
-            loader: "react-svg-loader",
+            loader: 'react-svg-loader',
             options: {
               jsx: true, // true outputs JSX tags
             },
@@ -57,7 +57,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      favicon: "./src/images/favicon.ico",
+      favicon: './src/images/favicon.ico',
     }),
   ],
 };

@@ -3,6 +3,9 @@ import styled from 'react-emotion';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import { ToastContainer, toast } from 'react-toastify';
+import { injectStyle } from 'react-toastify/dist/inject-style';
+
 import BackIcon from '../../images/back.png';
 
 import HomePage from '../HomePage';
@@ -38,6 +41,9 @@ const PAGES = {
   STOVE_INFO: 'STOVE_INFO',
   STOVE_CONFIG: 'STOVE_CONFIG',
 };
+if (typeof window !== 'undefined') {
+  injectStyle();
+}
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -163,6 +169,7 @@ class App extends React.Component {
       },
     };
     setItemInLocalStorage('stoves', newConfigs);
+    this.notifyKeyPaired();
   };
 
   onCalibrate = async (heatLevel) => {
@@ -277,6 +284,35 @@ class App extends React.Component {
     }
   };
 
+  notifyKeyPaired = async () => {
+    const { activeStoveIndex } = this.state;
+
+    const stoveConfigs = getItemFromLocalStorage('stoves');
+    const stoveConfig = stoveConfigs[`stove${activeStoveIndex + 1}`];
+
+    if (!stoveConfig.key) {
+      toast.dark('Invalid API key');
+      return;
+    }
+
+    try {
+      const response = await axiosWrapper({
+        url: `https://api.thingspeak.com/channels/1309022/fields/${
+          activeStoveIndex + 1
+        }.json?api_key=${stoveConfig.key}&results=`,
+      });
+      console.log('parseResponse', response);
+      const parseResponse = get(response, 'data');
+
+      const feeds = get(parseResponse, 'feeds', []);
+      const feedsLength = feeds.length;
+      const angle = get(feeds[feedsLength - 1], 'field1', 0);
+      toast.dark('Stove is paired');
+    } catch (err) {
+      toast.dark('Invalid API key');
+    }
+  };
+
   renderPages = () => {
     const { activeStoveIndex, page, stoveConfigs, stoveKeyInput } = this.state;
     switch (page) {
@@ -336,6 +372,7 @@ class App extends React.Component {
         )}
         <AppName>Zetta</AppName>
         {this.renderPages()}
+        <ToastContainer />
       </Wrap>
     );
   }

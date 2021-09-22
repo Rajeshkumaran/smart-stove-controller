@@ -53,7 +53,6 @@ class StoveConfigPage extends React.Component {
     const { stoveConfigs } = this.props;
     const { no_of_heat_levels: noOfHeatLevels = 5, current_heat_level: currentHeatLevel = 0 } =
       stoveConfigs || {};
-    console.log('StoveConfigPage constructor', stoveConfigs);
     this.state = {
       noOfHeatLevels,
       currentHeatLevel,
