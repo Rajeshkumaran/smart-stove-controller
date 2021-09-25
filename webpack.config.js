@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -59,5 +60,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       favicon: './src/images/favicon.ico',
     }),
+    new CopyPlugin([{ from: 'src/pwa' }]),
   ],
 };
