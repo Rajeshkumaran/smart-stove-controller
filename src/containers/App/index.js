@@ -227,7 +227,8 @@ class App extends React.Component {
       const parseResponse = get(response, 'data');
       const feeds = get(parseResponse, 'feeds', []);
       const feedsLength = feeds.length;
-      const angle = get(feeds[feedsLength - 1], 'field1', 0);
+      const fieldName = `field${stoveIndex + 1}`;
+      const angle = get(feeds[feedsLength - 1], fieldName, 0);
       console.log('stoveConfig', stoveConfig, angle);
       const { angles } = stoveConfig || {};
       let requiredHeatLevel = -1;
@@ -301,12 +302,6 @@ class App extends React.Component {
           activeStoveIndex + 1
         }.json?api_key=${stoveConfig.key}&results=`,
       });
-      console.log('parseResponse', response);
-      const parseResponse = get(response, 'data');
-
-      const feeds = get(parseResponse, 'feeds', []);
-      const feedsLength = feeds.length;
-      const angle = get(feeds[feedsLength - 1], 'field1', 0);
       toast.dark('Stove is paired');
     } catch (err) {
       toast.dark('Invalid API key');
