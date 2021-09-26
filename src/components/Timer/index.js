@@ -38,6 +38,7 @@ function Timer({
   pause = false,
   stop = false,
   onPauseOrPlay = () => {},
+  resetTimerState,
   onStop = () => {},
   editTimerConfig,
 }) {
@@ -50,11 +51,6 @@ function Timer({
   }, [initialTimerState]);
 
   useEffect(() => {
-    if (timerState - 1 === 0) {
-      clearTimer();
-      setTimerState(initialTimerState);
-      return;
-    }
     if (pause) {
       clearTimer();
     } else if (!pause) {
@@ -64,6 +60,8 @@ function Timer({
           if (currentTimerValue.current && currentTimerValue.current - 1 === 0) {
             clearTimer();
             setTimerState(initialTimerState);
+            currentTimerValue.current = initialTimerState;
+            resetTimerState();
             return;
           }
           setTimerState((prevTimerState) => {

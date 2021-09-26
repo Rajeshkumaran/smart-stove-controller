@@ -79,6 +79,22 @@ class HomePage extends React.Component {
       activeTabIndex: selectedIndex,
     });
 
+  resetTimerState = () => {
+    const { activeStoveIndex } = this.props;
+    const { timers } = this.state;
+
+    const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
+    this.setState((oldState) => ({
+      timers: {
+        ...oldState.timers,
+        [`stove${activeStoveIndex + 1}`]: {
+          ...stoveTimerConfig,
+          pause: true,
+          stop: false,
+        },
+      },
+    }));
+  };
   onPauseOrPlay = () => {
     const { activeStoveIndex } = this.props;
     const { timers } = this.state;
@@ -146,6 +162,7 @@ class HomePage extends React.Component {
               pause={stoveTimerConfig.pause}
               stop={stoveTimerConfig.stop}
               onPauseOrPlay={this.onPauseOrPlay}
+              resetTimerState={this.resetTimerState}
               onStop={this.onStop}
               editTimerConfig={this.editTimerConfig}
             />
