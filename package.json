@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "To control the stove using pwa",
   "main": "index.js",
+  "engines": {
+    "node": "8.17"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bundle": "webpack -d",
