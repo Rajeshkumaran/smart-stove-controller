@@ -34,7 +34,7 @@ const Cancel = styled(Button)`
   margin-left: 5px;
 `;
 const TimerConfigModal = ({ show, onSave, onCancel }) => {
-  const [minutes, setMinutes] = useState(5);
+  const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
   return (

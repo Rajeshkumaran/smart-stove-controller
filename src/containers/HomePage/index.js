@@ -51,22 +51,22 @@ class HomePage extends React.Component {
       showTimerConfig: false,
       timers: {
         stove1: {
-          initialTimerState: 600,
+          initialTimerState: 0,
           pause: true,
           stop: false,
         },
         stove2: {
-          initialTimerState: 600,
+          initialTimerState: 0,
           pause: true,
           stop: false,
         },
         stove3: {
-          initialTimerState: 600,
+          initialTimerState: 0,
           pause: true,
           stop: false,
         },
         stove4: {
-          initialTimerState: 600,
+          initialTimerState: 0,
           pause: true,
           stop: false,
         },
@@ -100,6 +100,10 @@ class HomePage extends React.Component {
     const { timers } = this.state;
 
     const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
+    if (stoveTimerConfig.initialTimerState === 0) {
+      return;
+    }
+
     this.setState((oldState) => ({
       timers: {
         ...oldState.timers,

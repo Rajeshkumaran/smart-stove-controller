@@ -47,6 +47,7 @@ function Timer({
   const [timerState, setTimerState] = useState(initialTimerState);
 
   useEffect(() => {
+    // to set the initial timer value  after component mounts
     setTimerState(initialTimerState);
   }, [initialTimerState]);
 
@@ -55,7 +56,7 @@ function Timer({
       clearTimer();
     } else if (!pause) {
       // restart timer
-      if (!timerRef.current.timerId) {
+      if (!timerRef.current.timerId && initialTimerState !== 0) {
         timerRef.current.timerId = setInterval(() => {
           if (currentTimerValue.current && currentTimerValue.current - 1 === 0) {
             clearTimer();
