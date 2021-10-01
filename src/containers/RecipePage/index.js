@@ -122,7 +122,7 @@ export default class RecipePage extends React.Component {
   };
 
   getRecipesList = () => {
-    return getItemFromLocalStorage('recipes');
+    return getItemFromLocalStorage('recipes') || [];
   };
 
   onDeleteRecipe = (name) => {
