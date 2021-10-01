@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'react-emotion';
 import StoveIcon from '../../images/stove.png';
 import TimerIcon from '../../images/timer.png';
-
+import RecipeIcon from '../../images/recipes.png';
 import { primary, white } from '../../constants';
 
 const Wrapper = styled('div')`
@@ -31,6 +31,7 @@ function Tab({ activeTab = 0, onSelectTab }) {
   const options = [
     { key: 'StoveTab', name: 'Stove', icon: StoveIcon },
     { key: 'TimerTab', name: 'Timer', icon: TimerIcon },
+    { key: 'RecipesTab', name: 'Recipes', icon: RecipeIcon },
   ];
   const renderOptions = () => {
     return options.map((option, index) => (

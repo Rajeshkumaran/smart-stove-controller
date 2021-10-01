@@ -10,8 +10,9 @@ import StoveButtons from '../../components/StoveButtons';
 import Timer from '../../components/Timer';
 import TimerConfigModal from '../../components/TimerConfigModal';
 
-import { primary, primary_bg, white, slider_bg } from '../../constants';
+import { primary, slider_bg } from '../../constants';
 import { selectHomePageState } from '../../selectors';
+import RecipePage from '../RecipePage';
 
 const Container = styled('div')`
   width: 100%;
@@ -157,7 +158,7 @@ class HomePage extends React.Component {
     switch (activeTabIndex) {
       case 1: {
         const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
-
+        console.log('stoveTimerConfig', timers, stoveTimerConfig);
         return (
           <>
             <Timer
@@ -179,6 +180,8 @@ class HomePage extends React.Component {
           </>
         );
       }
+      case 2:
+        return <RecipePage onItemSelect={this.goToTimerPageWhenRecipeSelected} />;
       case 0:
       default: {
         return (
@@ -221,6 +224,21 @@ class HomePage extends React.Component {
     }
   };
 
+  goToTimerPageWhenRecipeSelected = (timerState) => {
+    this.onSelectTab(1);
+    const { activeStoveIndex } = this.props;
+    console.log('timerState', timerState, activeStoveIndex);
+
+    this.setState({
+      timers: {
+        ...this.state.timers,
+        [`stove${activeStoveIndex + 1}`]: {
+          ...this.state.timers[`stove${activeStoveIndex + 1}`],
+          initialTimerState: timerState,
+        },
+      },
+    });
+  };
   render() {
     const { activeTabIndex, showTimerConfig } = this.state;
     return (
