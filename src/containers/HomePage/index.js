@@ -13,6 +13,9 @@ import TimerConfigModal from '../../components/TimerConfigModal';
 import { primary, slider_bg } from '../../constants';
 import { selectHomePageState } from '../../selectors';
 import RecipePage from '../RecipePage';
+import { toast } from 'react-toastify';
+import axiosWrapper from '../../utils/requestWrapper';
+import { get, getItemFromLocalStorage } from '../../utils/helpers';
 
 const Container = styled('div')`
   width: 100%;
@@ -73,6 +76,7 @@ class HomePage extends React.Component {
         },
       },
     };
+    this.bgTimerId = null;
   }
 
   onSelectTab = (selectedIndex) =>
@@ -83,7 +87,7 @@ class HomePage extends React.Component {
   resetTimerState = () => {
     const { activeStoveIndex } = this.props;
     const { timers } = this.state;
-
+    console.log('resetTimerState called');
     const stoveTimerConfig = timers[`stove${activeStoveIndex + 1}`];
     this.setState((oldState) => ({
       timers: {
@@ -105,16 +109,28 @@ class HomePage extends React.Component {
       return;
     }
 
-    this.setState((oldState) => ({
-      timers: {
-        ...oldState.timers,
-        [`stove${activeStoveIndex + 1}`]: {
-          ...stoveTimerConfig,
-          pause: !stoveTimerConfig.pause,
-          stop: false,
+    const stoveConfigs = getItemFromLocalStorage('stoves');
+    const stoveConfig = stoveConfigs[`stove${activeStoveIndex + 1}`];
+    const { key: apiKey } = stoveConfig || {};
+
+    if (!apiKey) {
+      toast.dark('Please calibrate and start timer');
+      return;
+    }
+
+    this.setState(
+      (oldState) => ({
+        timers: {
+          ...oldState.timers,
+          [`stove${activeStoveIndex + 1}`]: {
+            ...stoveTimerConfig,
+            pause: !stoveTimerConfig.pause,
+            stop: false,
+          },
         },
-      },
-    }));
+      }),
+      () => this.fetchStoveAngleInBackground(activeStoveIndex + 1),
+    );
   };
 
   onStop = () => {
@@ -127,6 +143,7 @@ class HomePage extends React.Component {
         [`stove${activeStoveIndex + 1}`]: { ...stoveTimerConfig, stop: true, pause: true },
       },
     }));
+    this.stopBGTimer();
   };
 
   editTimerConfig = () => {
@@ -239,6 +256,48 @@ class HomePage extends React.Component {
       },
     });
   };
+
+  fetchStoveAngleInBackground = (stoveIndex) => {
+    const stoveConfigs = getItemFromLocalStorage('stoves');
+    const stoveConfig = stoveConfigs[`stove${stoveIndex}`];
+    const { key: apiKey } = stoveConfig || {};
+    const { timers } = this.state;
+    if (timers[`stove${stoveIndex}`].pause) {
+      this.stopBGTimer();
+      return;
+    }
+
+    // start timer
+    this.bgTimerId = setInterval(async () => {
+      try {
+        const response = await axiosWrapper({
+          url: `https://api.thingspeak.com/channels/1309022/fields/${stoveIndex}.json?api_key=${apiKey}&results=`,
+        });
+        const { timers } = this.state;
+
+        if (timers[`stove${stoveIndex}`].pause) {
+          this.stopBGTimer();
+          return;
+        }
+        const parseResponse = get(response, 'data');
+        const feeds = get(parseResponse, 'feeds', []);
+        const feedsLength = feeds.length;
+        const angle = get(feeds[feedsLength - 1], 'field1', 0);
+        if (angle == 0) {
+          // when angle reaches 0 stop timer
+          this.stopBGTimer();
+        }
+      } catch (err) {
+        console.error('Error in fetchStoveAngleInBackground', err);
+      }
+    }, 5000);
+  };
+
+  stopBGTimer = () => {
+    if (this.bgTimerId) clearInterval(this.bgTimerId);
+    this.bgTimerId = null;
+  };
+
   render() {
     const { activeTabIndex, showTimerConfig } = this.state;
     return (
