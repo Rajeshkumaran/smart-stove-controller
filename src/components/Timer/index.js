@@ -30,7 +30,12 @@ const ConfigWrap = styled('div')`
   align-items: center;
   justify-content: center;
 `;
-const Stopbutton = styled(Button)`
+
+const PlayOrPause = styled(Button)`
+  width: 70px;
+  height: 60px;
+`;
+const Stopbutton = styled(PlayOrPause)`
   margin-left: 12px;
 `;
 function Timer({
@@ -111,7 +116,7 @@ function Timer({
         />
       </SliderWrapper>
       <ConfigWrap>
-        <Button onClick={onPauseOrPlay}>{pause ? 'Play' : 'Pause'}</Button>
+        <PlayOrPause onClick={onPauseOrPlay}>{pause ? 'Play' : 'Pause'}</PlayOrPause>
         <Stopbutton onClick={onStop}>Stop</Stopbutton>
       </ConfigWrap>
     </div>
