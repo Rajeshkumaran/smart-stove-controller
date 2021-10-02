@@ -30,12 +30,14 @@ const SliderWrapper = styled('div')`
   > svg {
     position: relative;
     left: -21px;
+    width: 220px;
+    height: 220px;
   }
 `;
 
 const HeatText = styled('span')`
   position: relative;
-  right: -80px;
+  right: -100px;
   font-size: 18px;
   font-weight: bold;
   padding: 5px;
@@ -222,7 +224,7 @@ class HomePage extends React.Component {
                 stepSize={1}
                 circleWidth={20}
                 progressWidth={20}
-                knobRadius={10}
+                knobRadius={20}
                 circleColor={slider_bg}
                 progressColor={primary}
                 disabled

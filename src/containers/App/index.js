@@ -187,7 +187,7 @@ class App extends React.Component {
       const parseResponse = get(response, 'data');
       const feeds = get(parseResponse, 'feeds', []);
       const feedsLength = feeds.length;
-      const angle = get(feeds[feedsLength - 1], `field${activeStoveIndex}`, 0);
+      const angle = get(feeds[feedsLength - 1], `field${activeStoveIndex + 1}`, 0);
       this.updateStoveConfig('angles', {
         ...stoveConfig.angles,
         [heatLevel]: angle,

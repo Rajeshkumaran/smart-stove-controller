@@ -25,8 +25,8 @@ const Stove = styled('button')`
   justify-content: center;
   align-items: center;
   border-radius: 8px;
-  width: 80px;
-  height: 60px;
+  width: 100px;
+  height: 80px;
   margin: 8px 12px;
 `;
 
