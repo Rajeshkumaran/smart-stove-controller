@@ -310,13 +310,17 @@ class App extends React.Component {
 
   renderPages = () => {
     const { activeStoveIndex, page, stoveConfigs, stoveKeyInput } = this.state;
+
+    const stoveConfigsFromStorage = getItemFromLocalStorage('stoves');
+
+    const apiKey = stoveConfigsFromStorage[`stove${activeStoveIndex + 1}`].key || stoveKeyInput;
     switch (page) {
       case PAGES.STOVE_CONFIG:
         return (
           <StoveConfigPage
             stoveId={activeStoveIndex}
             stoveConfigs={stoveConfigs[`stove${activeStoveIndex + 1}`]}
-            stoveKeyInput={stoveKeyInput}
+            stoveKeyInput={apiKey}
             updateStoveKey={this.updateStoveKey}
             registerApiKey={this.registerApiKey}
             onCalibrate={this.onCalibrate}
@@ -353,6 +357,7 @@ class App extends React.Component {
               this.setState({
                 showBackArrow: false,
                 page: PAGES.STOVE_INFO,
+                stoveKeyInput: '',
               })
             }
           >
