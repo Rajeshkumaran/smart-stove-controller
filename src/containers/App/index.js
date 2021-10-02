@@ -297,7 +297,7 @@ class App extends React.Component {
     }
 
     try {
-      const response = await axiosWrapper({
+      await axiosWrapper({
         url: `https://api.thingspeak.com/channels/1309022/fields/${
           activeStoveIndex + 1
         }.json?api_key=${stoveConfig.key}&results=`,

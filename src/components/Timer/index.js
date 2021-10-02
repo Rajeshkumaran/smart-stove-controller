@@ -68,6 +68,7 @@ function Timer({
             setTimerState(initialTimerState);
             currentTimerValue.current = initialTimerState;
             resetTimerState();
+            play_single_sound();
             return;
           }
           setTimerState((prevTimerState) => {
@@ -98,6 +99,13 @@ function Timer({
     return `${minutes} : ${seconds}`;
   };
 
+  const play_single_sound = () => {
+    document.getElementById('audiotag').play();
+    setTimeout(() => {
+      document.getElementById('audiotag').pause();
+    }, 2000);
+  };
+
   return (
     <div ref={timerRef}>
       <SliderWrapper onClick={editTimerConfig}>
@@ -118,6 +126,11 @@ function Timer({
       <ConfigWrap>
         <PlayOrPause onClick={onPauseOrPlay}>{pause ? 'Play' : 'Pause'}</PlayOrPause>
         <Stopbutton onClick={onStop}>Stop</Stopbutton>
+        <audio
+          id='audiotag'
+          src='https://firebasestorage.googleapis.com/v0/b/smart-stove-controller.appspot.com/o/timerBuzz.mp3?alt=media&token=a2acf534-31e2-4bb7-ba20-edb612b5719f'
+          preload='auto'
+        ></audio>
       </ConfigWrap>
     </div>
   );

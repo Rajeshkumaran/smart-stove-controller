@@ -287,7 +287,7 @@ class HomePage extends React.Component {
         const angle = get(feeds[feedsLength - 1], 'field1', 0);
         if (angle == 0) {
           // when angle reaches 0 stop timer
-          this.stopBGTimer();
+          this.onStop();
         }
       } catch (err) {
         console.error('Error in fetchStoveAngleInBackground', err);
