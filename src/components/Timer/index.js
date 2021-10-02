@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { CircleSlider } from 'react-circle-slider';
 import styled from 'react-emotion';
-
-import { primary, slider_bg } from '../../constants';
 import Button from '../Button';
+
+import { primary, slider_bg, TIMER_BUZZ_AUDIO_URL } from '../../constants';
 
 const SliderWrapper = styled('div')`
   width: 100%;
@@ -126,11 +126,7 @@ function Timer({
       <ConfigWrap>
         <PlayOrPause onClick={onPauseOrPlay}>{pause ? 'Play' : 'Pause'}</PlayOrPause>
         <Stopbutton onClick={onStop}>Stop</Stopbutton>
-        <audio
-          id='audiotag'
-          src='https://firebasestorage.googleapis.com/v0/b/smart-stove-controller.appspot.com/o/timerBuzz.mp3?alt=media&token=a2acf534-31e2-4bb7-ba20-edb612b5719f'
-          preload='auto'
-        ></audio>
+        <audio id='audiotag' src={TIMER_BUZZ_AUDIO_URL} preload='auto'></audio>
       </ConfigWrap>
     </div>
   );

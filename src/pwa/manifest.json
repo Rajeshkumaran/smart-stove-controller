@@ -3,7 +3,7 @@
     "name": "Smart stove controller",
     "icons": [
       {
-        "src": "/pwaIcon.png",
+        "src": "/Logo.jpeg",
         "type": "image/png",
         "sizes": "144x144"
       }
