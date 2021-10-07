@@ -68,7 +68,7 @@ function Timer({
             setTimerState(initialTimerState);
             currentTimerValue.current = initialTimerState;
             resetTimerState();
-            play_single_sound();
+            playTimerBuzz();
             return;
           }
           setTimerState((prevTimerState) => {
@@ -81,6 +81,7 @@ function Timer({
     if (stop) {
       clearTimer();
       setTimerState(initialTimerState);
+      stopTimerBuzz();
     }
   }, [pause, stop]);
 
@@ -99,13 +100,12 @@ function Timer({
     return `${minutes} : ${seconds}`;
   };
 
-  const play_single_sound = () => {
+  const playTimerBuzz = () => {
     document.getElementById('audiotag').play();
-    setTimeout(() => {
-      document.getElementById('audiotag').pause();
-    }, 2000);
   };
-
+  const stopTimerBuzz = () => {
+    document.getElementById('audiotag').pause();
+  };
   return (
     <div ref={timerRef}>
       <SliderWrapper onClick={editTimerConfig}>
@@ -126,7 +126,7 @@ function Timer({
       <ConfigWrap>
         <PlayOrPause onClick={onPauseOrPlay}>{pause ? 'Play' : 'Pause'}</PlayOrPause>
         <Stopbutton onClick={onStop}>Stop</Stopbutton>
-        <audio id='audiotag' src={TIMER_BUZZ_AUDIO_URL} preload='auto'></audio>
+        <audio id='audiotag' src={TIMER_BUZZ_AUDIO_URL} preload='auto' loop></audio>
       </ConfigWrap>
     </div>
   );
