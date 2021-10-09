@@ -5,7 +5,14 @@
       {
         "src": "/Logo.jpeg",
         "type": "image/png",
-        "sizes": "796x1028"
+        "sizes": "144x144",
+        "purpose": "any"
+      },
+      {
+        "src": "/Logo.jpeg",
+        "type": "image/png",
+        "sizes": "512x512",
+        "purpose": "any"
       }
     ],
     "start_url": ".",
