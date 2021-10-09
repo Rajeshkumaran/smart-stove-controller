@@ -3,13 +3,13 @@
     "name": "Zetta",
     "icons": [
       {
-        "src": "/Logo.jpeg",
+        "src": "/Logo.png",
         "type": "image/png",
         "sizes": "144x144",
         "purpose": "any"
       },
       {
-        "src": "/Logo.jpeg",
+        "src": "/Logo.png",
         "type": "image/png",
         "sizes": "512x512",
         "purpose": "any"
