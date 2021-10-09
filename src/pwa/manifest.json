@@ -1,11 +1,11 @@
 {
-    "short_name": "Smart stove",
-    "name": "Smart stove controller",
+    "short_name": "",
+    "name": "",
     "icons": [
       {
         "src": "/Logo.jpeg",
         "type": "image/png",
-        "sizes": "144x144"
+        "sizes": "796x1028"
       }
     ],
     "start_url": ".",
