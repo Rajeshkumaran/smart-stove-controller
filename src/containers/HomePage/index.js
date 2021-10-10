@@ -10,6 +10,8 @@ import StoveButtons from '../../components/StoveButtons';
 import Timer from '../../components/Timer';
 import TimerConfigModal from '../../components/TimerConfigModal';
 
+import LowbatteryIcon from '../../images/lowBattery.png';
+
 import { primary, slider_bg } from '../../constants';
 import { selectHomePageState } from '../../selectors';
 import RecipePage from '../RecipePage';
@@ -48,6 +50,17 @@ const StoveConfigEdit = styled('button')`
   margin-top: 16px;
   color: ${primary};
 `;
+const BatteryIconWrapper = styled('div')`
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+`;
+const Img = styled('img')`
+  width: 100%;
+  height: 100%;
+`;
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -79,6 +92,10 @@ class HomePage extends React.Component {
       },
     };
     this.bgTimerId = null;
+  }
+
+  componentDidMount() {
+    this.getBatteryInfo();
   }
 
   onSelectTab = (selectedIndex) =>
@@ -203,6 +220,7 @@ class HomePage extends React.Component {
         return <RecipePage onItemSelect={this.goToTimerPageWhenRecipeSelected} />;
       case 0:
       default: {
+        const { showBatteryIndicator } = this.state;
         return (
           <>
             <div
@@ -210,10 +228,17 @@ class HomePage extends React.Component {
                 display: flex;
                 width: 100%;
                 justify-content: center;
+                position: relative;
               `}
             >
               <StoveConfigEdit onClick={onEditStoveConfig}>EDIT CONFIG</StoveConfigEdit>
+              {showBatteryIndicator && (
+                <BatteryIconWrapper>
+                  <Img src={LowbatteryIcon} />
+                </BatteryIconWrapper>
+              )}
             </div>
+
             <SliderWrapper>
               <HeatText>{currentHeatLevel || 0}</HeatText>
               <CircleSlider
@@ -298,6 +323,41 @@ class HomePage extends React.Component {
   stopBGTimer = () => {
     if (this.bgTimerId) clearInterval(this.bgTimerId);
     this.bgTimerId = null;
+  };
+
+  getBatteryInfo = () => {
+    this.bgBatteryInfoTimer = setInterval(async () => {
+      const { activeStoveIndex } = this.props;
+
+      const stoveConfigs = getItemFromLocalStorage('stoves');
+      const stoveConfig = stoveConfigs[`stove${activeStoveIndex + 1}`];
+      const { key: apiKey } = stoveConfig || {};
+      if (apiKey) {
+        try {
+          const response = await axiosWrapper({
+            url: `https://api.thingspeak.com/channels/1309022/fields/${
+              activeStoveIndex + 5
+            }.json?api_key=${apiKey}&results=`,
+          });
+
+          const parseResponse = get(response, 'data');
+          const feeds = get(parseResponse, 'feeds', []);
+          const feedsLength = feeds.length;
+          const batteryStatus = get(feeds[feedsLength - 1], `field${activeStoveIndex + 5}`, 0);
+          if (batteryStatus === '-' && !this.state.showBatteryIndicator) {
+            this.setState({
+              showBatteryIndicator: true,
+            });
+          } else if (this.state.showBatteryIndicator) {
+            this.setState({
+              showBatteryIndicator: false,
+            });
+          }
+        } catch (err) {
+          console.error('Error in fetchStoveBattery info', err);
+        }
+      }
+    }, 5000);
   };
 
   render() {
