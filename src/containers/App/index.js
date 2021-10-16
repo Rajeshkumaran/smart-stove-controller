@@ -190,7 +190,7 @@ class App extends React.Component {
       const angle = get(feeds[feedsLength - 1], `field${activeStoveIndex + 1}`, 0);
       this.updateStoveConfig('angles', {
         ...stoveConfig.angles,
-        [heatLevel]: angle,
+        [heatLevel]: Number(angle),
       });
     } catch (err) {
       console.error('Error in calibration', err);
@@ -227,19 +227,21 @@ class App extends React.Component {
       const parseResponse = get(response, 'data');
       const feeds = get(parseResponse, 'feeds', []);
       const feedsLength = feeds.length;
-      const fieldName = `field${stoveIndex + 1}`;
-      const angle = get(feeds[feedsLength - 1], fieldName, 0);
-      console.log('stoveConfig', stoveConfig, angle);
+      const fieldName = `field${stoveIndex}`;
+      const angle = Number(get(feeds[feedsLength - 1], fieldName, 0));
       const { angles } = stoveConfig || {};
-      let requiredHeatLevel = -1;
-      Object.keys(angles).map((heatLevel) => {
-        if (requiredHeatLevel === -1 && angle <= angles[heatLevel]) {
-          const angle1 = Math.abs(angles[heatLevel - 1] || 0 - angle);
-          const angle2 = Math.abs(angles[heatLevel] - angle);
-          if (angle1 < angle2) requiredHeatLevel = heatLevel - 1;
-          requiredHeatLevel = heatLevel;
+
+      let requiredHeatLevel = '';
+      for (let heatLevel = 1; heatLevel < stoveConfig['no_of_heat_levels']; heatLevel++) {
+        // find heatLevel logic
+        if (requiredHeatLevel === '' && angle <= angles[heatLevel]) {
+          const angle1 = Math.abs(Number(angles[heatLevel]) - angle);
+          const angle2 = Math.abs(Number(angles[heatLevel + 1]) - angle);
+          if (angle1 < angle2) requiredHeatLevel = heatLevel;
+          else requiredHeatLevel = heatLevel + 1;
         }
-      });
+      }
+
       this.setState({
         stoveConfigs: {
           ...this.state.stoveConfigs,
@@ -261,14 +263,12 @@ class App extends React.Component {
 
     // all the angles should be calibrated before making sync
     let allowSync = true;
-    console.log('stoveAngles', stoveAngles);
     Object.keys(stoveAngles).map((heatLevel) => {
       const angle = stoveAngles[heatLevel];
       if (!angle) {
         allowSync = false;
       }
     });
-
     if (!bgProcessStates[`stove${activeStoveIndex + 1}.processRunning`] && allowSync) {
       const timerId = setInterval(() => {
         this.syncApi({ stoveId: `stove${activeStoveIndex + 1}`, stoveIndex: activeStoveIndex + 1 });
