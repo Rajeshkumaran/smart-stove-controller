@@ -4,4 +4,5 @@ export const primary_bg = '#F5F6FB';
 export const white = '#FFFFFF';
 export const slider_bg = '#CCD7E6';
 export const LIGHT_GREY = '#e9e9e2';
-export const TIMER_BUZZ_AUDIO_URL = 'gs://smart-stove-controller.appspot.com/timerBuzzsound.mpeg';
+export const TIMER_BUZZ_AUDIO_URL =
+  'https://firebasestorage.googleapis.com/v0/b/smart-stove-controller.appspot.com/o/timerBuzzsound.mpeg?alt=media&token=d557c42b-fe75-4258-86bc-156e53a6a209';

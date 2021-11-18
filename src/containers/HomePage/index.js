@@ -309,7 +309,8 @@ class HomePage extends React.Component {
         const parseResponse = get(response, 'data');
         const feeds = get(parseResponse, 'feeds', []);
         const feedsLength = feeds.length;
-        const angle = get(feeds[feedsLength - 1], 'field1', 0);
+        const angle = get(feeds[feedsLength - 1], 'field1', -1);
+        console.log('angle', angle);
         if (angle == 0) {
           // when angle reaches 0 stop timer
           this.onStop();
